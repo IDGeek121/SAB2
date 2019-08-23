@@ -849,4 +849,7 @@
       <Filter>Source Files\entities</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>
