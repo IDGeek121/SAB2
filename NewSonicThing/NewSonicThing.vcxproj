@@ -24,7 +24,7 @@
     <ProjectGuid>{2D007BCD-B385-49CD-8760-71051BAD8A62}</ProjectGuid>
     <RootNamespace>NewSonicThing</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-	<VcpkgTriplet Condition="'$(Platform)'=='x64'">x64-windows-sab2</VcpkgTriplet>
+    <VcpkgTriplet Condition="'$(Platform)'=='x64'">x64-windows-sab2</VcpkgTriplet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -73,11 +73,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>../Libraries/Include;$(IncludePath)</IncludePath>
-    <LibraryPath>../Libraries/StaticCode;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>../Libraries/Include;$(IncludePath)</IncludePath>
-    <LibraryPath>../Libraries/StaticCode;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
