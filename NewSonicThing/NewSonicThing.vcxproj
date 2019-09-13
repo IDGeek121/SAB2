@@ -83,6 +83,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -91,6 +92,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;SOIL.lib;OpenAL32.lib;ogg.lib;vorbis.lib;vorbisfile.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -104,6 +106,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -120,6 +123,7 @@
       <ConformanceMode>true</ConformanceMode>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -148,6 +152,7 @@
     <ClCompile Include="src\entities\Camera.cpp" />
     <ClCompile Include="src\entities\ControllablePlayer.cpp" />
     <ClCompile Include="src\entities\DelfinoPlaza\DP_StageManager.cpp" />
+    <ClCompile Include="src\entities\Help.cpp" />
     <ClCompile Include="src\entities\ManiaMightyModel.cpp" />
     <ClCompile Include="src\entities\PlayerModel.cpp" />
     <ClCompile Include="src\entities\PlayerSonic.cpp" />
@@ -170,6 +175,7 @@
     <ClCompile Include="src\entities\MetalHarbor\MH_StageManager.cpp" />
     <ClCompile Include="src\entities\MetalHarbor\MH_Tank.cpp" />
     <ClCompile Include="src\entities\Point.cpp" />
+    <ClCompile Include="src\entities\RaceGhost.cpp" />
     <ClCompile Include="src\entities\Rail.cpp" />
     <ClCompile Include="src\entities\Ring.cpp" />
     <ClCompile Include="src\entities\Rocket.cpp" />
@@ -180,6 +186,7 @@
     <ClCompile Include="src\entities\StagePass2.cpp" />
     <ClCompile Include="src\entities\StagePass3.cpp" />
     <ClCompile Include="src\entities\StageTransparent.cpp" />
+    <ClCompile Include="src\entities\Tutorial\T_StageManager.cpp" />
     <ClCompile Include="src\fontMeshCreator\Character.cpp" />
     <ClCompile Include="src\fontMeshCreator\FontType.cpp" />
     <ClCompile Include="src\fontMeshCreator\GUINumber.cpp" />
@@ -277,8 +284,9 @@
     <ClInclude Include="src\entities\camera.h" />
     <ClInclude Include="src\entities\controllableplayer.h" />
     <ClInclude Include="src\entities\DelfinoPlaza\dpstagemanager.h" />
+    <ClInclude Include="src\entities\help.h" />
     <ClInclude Include="src\entities\maniamightymodel.h" />
-    <ClInclude Include="src\entities\PlayerModel.h" />
+    <ClInclude Include="src\entities\playermodel.h" />
     <ClInclude Include="src\entities\playersonic.h" />
     <ClInclude Include="src\entities\checkpoint.h" />
     <ClInclude Include="src\entities\CityEscape\cestagemanager.h" />
@@ -299,6 +307,7 @@
     <ClInclude Include="src\entities\MetalHarbor\mhstagemanager.h" />
     <ClInclude Include="src\entities\MetalHarbor\mhtank.h" />
     <ClInclude Include="src\entities\point.h" />
+    <ClInclude Include="src\entities\raceghost.h" />
     <ClInclude Include="src\entities\rail.h" />
     <ClInclude Include="src\entities\ring.h" />
     <ClInclude Include="src\entities\rocket.h" />
@@ -309,6 +318,7 @@
     <ClInclude Include="src\entities\stagepass2.h" />
     <ClInclude Include="src\entities\stagepass3.h" />
     <ClInclude Include="src\entities\stagetransparent.h" />
+    <ClInclude Include="src\entities\Tutorial\tstagemanager.h" />
     <ClInclude Include="src\fontMeshCreator\character.h" />
     <ClInclude Include="src\fontMeshCreator\fonttype.h" />
     <ClInclude Include="src\fontMeshCreator\guinumber.h" />

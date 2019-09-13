@@ -191,6 +191,12 @@ std::unordered_map<std::string, std::string> Global::gameSaveData;
 bool Global::stageUsesWater = true;
 FontType* Global::fontVipnagorgialla = nullptr;
 bool Global::renderWithCulling = true;
+bool Global::displayFPS = true;
+int Global::currentCalculatedFPS = 0;
+int Global::renderCount = 0;
+
+std::list<std::string> Global::raceLog;
+bool Global::shouldLogRace = false;
 
 std::list<Checkpoint*> Global::gameCheckpointList;
 int Global::gameCheckpointLast;
@@ -357,6 +363,7 @@ int main(int argc, char** argv)
 	while (Global::gameState != STATE_EXITING && displayWantsToClose() == 0)
 	{
 		frameCount++;
+        Global::renderCount++;
 		timeNew = glfwGetTime();
 		dt = (float)(timeNew - timeOld);
 		dt = std::fminf(dt, 0.04f); //Anything lower than 25fps will slow the gameplay down
@@ -465,7 +472,7 @@ int main(int argc, char** argv)
 			size_t numDeleted = gameChunkedEntities[realIndex].erase(entityToDelete);
             if (numDeleted == 0)
             {
-                for (int i = 0; i < gameChunkedEntities.size(); i++)
+                for (int i = 0; i < (int)gameChunkedEntities.size(); i++)
                 {
                     numDeleted = gameChunkedEntities[i].erase(entityToDelete);
                     if (numDeleted > 0)
@@ -488,6 +495,27 @@ int main(int argc, char** argv)
 			case STATE_RUNNING:
 			{
 				//game logic
+
+                //unlock framerate during gameplay
+                if (Global::framerateUnlock)
+                {
+                    //idea to make it possible to render at 120, 180, 240fps, etc.
+                    // works, but frame dt's are so different that it doesn't feel good.
+                    // example: at 180fps on 60hz monitor, youd maybe get dt's of 2ms, 2ms, and then 12.66ms to finish off the next monitor refresh.
+                    // 3 frames were rendered per 1 monitor refresh, but they wont feel good.
+                    //if (Global::renderCount%(Global::syncToDisplayEveryXFrames) == 0)
+                    //{
+                    //    glfwSwapInterval(1);
+                    //}
+                    //else
+                    //{
+                        glfwSwapInterval(0);
+                    //}
+                }
+                else
+                {
+                    glfwSwapInterval(1);
+                }
 
 				if (Global::raceStartTimer >= 0)
 				{
@@ -555,17 +583,22 @@ int main(int argc, char** argv)
 
 			case STATE_PAUSED:
 			{
+                //vsync during pausing. no need to stress the system.
+                glfwSwapInterval(1);
 				break;
 			}
 
 			case STATE_CUTSCENE:
 			{
+                glfwSwapInterval(1);
 				Global::gameCamera->refresh();
 				break;
 			}
 
 			case STATE_TITLE:
 			{
+                //vsync during title. no need to stress the system.
+                glfwSwapInterval(1);
 				Global::gameCamera->refresh();
 				if (Global::renderParticles)
 				{
@@ -576,6 +609,8 @@ int main(int argc, char** argv)
 
 			case STATE_DEBUG:
 			{
+                glfwSwapInterval(1);
+
 				if (Global::gameMainPlayer != nullptr)
 				{
 					//Global::gamePlayer->debugAdjustCamera();
@@ -835,6 +870,7 @@ int main(int argc, char** argv)
 
 		if (timeNew - previousTime >= 1.0)
 		{
+            Global::currentCalculatedFPS = (int)(std::round(frameCount/(timeNew - previousTime)));
 			//std::fprintf(stdout, "fps: %f\n", frameCount / (timeNew - previousTime));
 			//std::fprintf(stdout, "diff: %d\n", Global::countNew - Global::countDelete);
 			//Loader::printInfo();
@@ -995,9 +1031,9 @@ void Main_deleteAllTransparentEntites()
 void increaseProcessPriority()
 {
 	#ifdef _WIN32
-	//DWORD dwError;//, dwPriClass;
+	DWORD dwError;
 
-	/*
+	
 	if (!SetPriorityClass(GetCurrentProcess(), ABOVE_NORMAL_PRIORITY_CLASS))
 	{
 		dwError = GetLastError();
@@ -1009,19 +1045,19 @@ void increaseProcessPriority()
 		dwError = GetLastError();
 		_tprintf(TEXT("Failed to enter above normal mode (%d)\n"), (int)dwError);
 	}
-	*/
+	
 
 	/*
 	if (!SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS))
 	{
 		dwError = GetLastError();
-		_tprintf(TEXT("Failed to enter above normal mode (%d)\n"), (int)dwError);
+		_tprintf(TEXT("Failed to enter below normal mode (%d)\n"), (int)dwError);
 	}
 
 	if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_BELOW_NORMAL))
 	{
 		dwError = GetLastError();
-		_tprintf(TEXT("Failed to enter above normal mode (%d)\n"), (int)dwError);
+		_tprintf(TEXT("Failed to enter below normal mode (%d)\n"), (int)dwError);
 	}
 	*/
 
@@ -1533,6 +1569,8 @@ void Global::debugNew(const char* name)
         int num = heapObjects[name];
         heapObjects[name] = num+1;
     }
+    #else
+    name;
     #endif
 }
 
@@ -1551,5 +1589,7 @@ void Global::debugDel(const char* name)
         int num = heapObjects[name];
         heapObjects[name] = num-1;
     }
+    #else
+    name;
     #endif
 }
