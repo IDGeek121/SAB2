@@ -25,6 +25,11 @@
 #include <unistd.h>
 #endif
 
+#ifdef __SWITCH__
+#include <switch.h>
+#include <unistd.h>
+#endif
+
 #include "main.h"
 #include "../renderEngine/renderEngine.h"
 #include "../toolbox/input.h"
@@ -78,6 +83,24 @@
 #include <windows.h>
 #include <tchar.h>
 #endif
+
+#include "logger.h"
+
+static int nxlink_sock = -1;
+
+extern "C" void userAppInit()
+{
+	socketInitializeDefault();
+	nxlinkStdio();
+}
+
+extern "C" void userAppExit()
+{
+	if (nxlink_sock != -1)
+		close(nxlink_sock);
+	socketExit();
+}
+
 
 std::string Global::pathToEXE;
 
@@ -222,7 +245,9 @@ bool Global::unlockedAmy = true;
 
 std::vector<std::string> Global::npcList;
 
+#ifdef _WIN32
 void increaseProcessPriority();
+#endif
 
 void doListenThread();
 
@@ -233,6 +258,10 @@ Timer* Global::mainHudTimer = nullptr;
 
 int main(int argc, char** argv)
 {
+    setbuf(stdout, NULL);
+    printf(":)\n");
+
+    
     if (argc > 0)
     {
         Global::pathToEXE = argv[0];
@@ -246,24 +275,26 @@ int main(int argc, char** argv)
         #endif
     }
 
-    #ifdef DEV_MODE
-    std::thread listenThread(doListenThread);
-    #endif
-
+    #ifdef _WIN32
     increaseProcessPriority();
+    #endif
 
     Global::countNew = 0;
     Global::countDelete = 0;
 
     srand(0);
 
+    DEBUG("Creating display\n");
     createDisplay();
+    DEBUG("Display created!\n");
 
     Global::characterNames[Global::PlayableCharacter::Sonic] = "Sonic";
     Global::characterNames[Global::PlayableCharacter::Tails] = "Tails";
     Global::characterNames[Global::PlayableCharacter::Knuckles] = "Knuckles";
 
+    DEBUG("Loading save data\n");
     Global::loadSaveData();
+    DEBUG("Save data loaded!\n");
 
     //The levels you play in arcade mode, in order
     Global::gameArcadeLevelIds.push_back(LVL_TUTORIAL);
@@ -276,23 +307,35 @@ int main(int argc, char** argv)
     FreeConsole();
     #endif
 
+    DEBUG("Initialize input\n");
     Input::init();
+    DEBUG("Input initialized!\n");
 
     //This camera is never deleted.
     Camera cam;
     Global::gameCamera = &cam;
 
+    DEBUG("Initialize master renderer\n");
     Master_init();
+    DEBUG("Master renderer initialized!\n");
 
+    DEBUG("Load level data\n");
     LevelLoader::loadLevelData();
+    DEBUG("Level data loaded!\n");
 
+    DEBUG("Initialize audio master\n");
     AudioMaster::init();
+    DEBUG("Audio master initialized!\n");
 
     Global::fontVipnagorgialla = new FontType(Loader::loadTexture("res/Fonts/vipnagorgialla.png"), "res/Fonts/vipnagorgialla.fnt"); INCR_NEW("FontType");
 
+    DEBUG("Initialize text master\n");
     TextMaster::init();
+    DEBUG("Text master initialized!\n");
 
+    DEBUG("Initialize GUI manager\n");
     GuiManager::init();
+    DEBUG("GUI manager initialized!\n");
 
     Global::menuManager.push(new MainMenu); INCR_NEW("MainMenu");
 
@@ -914,10 +957,6 @@ int main(int argc, char** argv)
 
     Global::saveSaveData();
 
-    #ifdef DEV_MODE
-    listenThread.detach();
-    #endif
-
     Master_cleanUp();
     Loader::cleanUp();
     TextMaster::cleanUp();
@@ -1353,7 +1392,7 @@ int Global::calculateRankAndUpdate()
 
 void doListenThread()
 {
-#ifdef _WIN32
+    #ifdef _WIN32
     DWORD dwError;
 
     if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_BELOW_NORMAL))
@@ -1361,7 +1400,7 @@ void doListenThread()
         dwError = GetLastError();
         _tprintf(TEXT("Failed to enter above normal mode (%d)\n"), (int)dwError);
     }
-#endif
+    #endif
 
     listen();
 }

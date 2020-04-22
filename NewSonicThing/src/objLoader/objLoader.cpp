@@ -86,8 +86,8 @@ int loadBinaryModel(std::list<TexturedModel*>* models, std::string filePath, std
     }
 
     FILE* file = nullptr;
-    int err = fopen_s(&file, (Global::pathToEXE+filePath+fileName).c_str(), "rb");
-    if (file == nullptr || err != 0)
+    file = fopen((Global::pathToEXE+filePath+fileName).c_str(), "rb");
+    if (file == nullptr)
     {
         //std::fprintf(stderr, "Error: Cannot load file '%s'\n", (filePath + fileName).c_str());
         //std::fprintf(stderr, "fopen_s error code: '%d'\n", err);
@@ -257,8 +257,8 @@ int loadVclModel(std::list<TexturedModel*>* models, std::string filePath, std::s
     }
 
     FILE* file = nullptr;
-    int err = fopen_s(&file, (Global::pathToEXE+filePath+fileName).c_str(), "rb");
-    if (file == nullptr || err != 0)
+    file = fopen((Global::pathToEXE+filePath+fileName).c_str(), "rb");
+    if (file == nullptr)
     {
         //std::fprintf(stderr, "Error: Cannot load file '%s'\n", (filePath + fileName).c_str());
         //std::fprintf(stderr, "fopen_s error code: '%d'\n", err);
@@ -946,8 +946,8 @@ int loadBinaryModelWithMTL(std::list<TexturedModel*>* models, std::string filePa
     }
 
     FILE* file = nullptr;
-    int err = fopen_s(&file, (Global::pathToEXE+filePath+fileNameBin).c_str(), "rb");
-    if (file == nullptr || err != 0)
+    file = fopen((Global::pathToEXE+filePath+fileNameBin).c_str(), "rb");
+    if (file == nullptr)
     {
         std::fprintf(stderr, "Error: Cannot load file '%s'\n", (filePath + fileNameBin).c_str());
         //std::fprintf(stderr, "fopen_s error code: '%d'\n", err);
@@ -1442,8 +1442,8 @@ void workOnQuadTreeNode(FILE* file, QuadTreeNode* node)
 CollisionModel* loadBinaryQuadTree(std::string filePath, std::string fileName)
 {
     FILE* file = nullptr;
-    int err = fopen_s(&file, (Global::pathToEXE + "res/" + filePath+fileName+".qtree").c_str(), "rb");
-    if (file == nullptr || err != 0)
+    file = fopen((Global::pathToEXE + "res/" + filePath+fileName+".qtree").c_str(), "rb");
+    if (file == nullptr)
     {
         //std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + "res/" + filePath+fileName+".qtree").c_str());
         return nullptr;
@@ -1498,8 +1498,8 @@ CollisionModel* loadBinaryCollisionModel(std::string filePath, std::string fileN
     char currParticle = 0;
 
     FILE* file = nullptr;
-    int err = fopen_s(&file, (Global::pathToEXE + "res/" + filePath+fileName+".bincol").c_str(), "rb");
-    if (file == nullptr || err != 0)
+    file = fopen((Global::pathToEXE + "res/" + filePath+fileName+".bincol").c_str(), "rb");
+    if (file == nullptr)
     {
         std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + "res/" + filePath+fileName+".bincol").c_str());
         return nullptr;

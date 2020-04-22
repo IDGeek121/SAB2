@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <SOIL/SOIL.h>
+#include "../SOIL/SOIL.h"
 
 #include <iostream>
 #include <cmath>
@@ -54,25 +54,15 @@ int createDisplay()
 
     // Request an OpenGL 4.0 core context.
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     loadDisplaySettings();
     loadGraphicsSettings();
 
-    GLFWmonitor* monitor = nullptr;
-
     glfwWindowHint(GLFW_SAMPLES, AA_SAMPLES);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-    if (Global::useFullscreen)
-    {
-        monitor = glfwGetPrimaryMonitor();
-
-        SCR_WIDTH = F_WIDTH;
-        SCR_HEIGHT = F_HEIGHT;
-    }
 
     unsigned int screenWidth  = SCR_WIDTH;
     unsigned int screenHeight = SCR_HEIGHT;
@@ -88,7 +78,7 @@ int createDisplay()
 
     // glfw window creation
     // --------------------
-    window = glfwCreateWindow(screenWidth, screenHeight, "Sonic Adventure Blast 2", monitor, nullptr);
+    window = glfwCreateWindow(screenWidth, screenHeight, "Sonic Adventure Blast 2", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -130,6 +120,7 @@ int createDisplay()
     glfwSwapInterval(1); //1 = vsync. 0 = off. 2 = half monitor refresh rate
     glEnable(GL_MULTISAMPLE);
 
+    #ifndef __SWITCH__
     //Center the window
     if (!Global::useFullscreen)
     {
@@ -147,6 +138,7 @@ int createDisplay()
             glfwSetWindowPos(window, xpos, ypos);
         }
     }
+    #endif
 
     //glfwGetWindowAttrib(window, GLFW_SAMPLES);
     //std::fprintf(stdout, "samples:   %d\n", glfwGetWindowAttrib(window, GLFW_SAMPLES));
