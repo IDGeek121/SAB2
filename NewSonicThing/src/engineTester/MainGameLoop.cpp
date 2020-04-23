@@ -84,7 +84,7 @@
 #include <tchar.h>
 #endif
 
-#include <logger.h>
+#include <macrologger.h>
 
 static int nxlink_sock = -1;
 
@@ -284,17 +284,15 @@ int main(int argc, char** argv)
 
     srand(0);
 
-    DEBUG("Creating display\n");
     createDisplay();
-    DEBUG("Display created!\n");
 
     Global::characterNames[Global::PlayableCharacter::Sonic] = "Sonic";
     Global::characterNames[Global::PlayableCharacter::Tails] = "Tails";
     Global::characterNames[Global::PlayableCharacter::Knuckles] = "Knuckles";
 
-    DEBUG("Loading save data\n");
+    LOG_DEBUG("Loading save data");
     Global::loadSaveData();
-    DEBUG("Save data loaded!\n");
+    LOG_DEBUG("Save data loaded!");
 
     //The levels you play in arcade mode, in order
     Global::gameArcadeLevelIds.push_back(LVL_TUTORIAL);
@@ -307,35 +305,31 @@ int main(int argc, char** argv)
     FreeConsole();
     #endif
 
-    DEBUG("Initialize input\n");
     Input::init();
-    DEBUG("Input initialized!\n");
 
     //This camera is never deleted.
     Camera cam;
     Global::gameCamera = &cam;
 
-    DEBUG("Initialize master renderer\n");
+    LOG_DEBUG("Initialize master renderer");
     Master_init();
-    DEBUG("Master renderer initialized!\n");
+    LOG_DEBUG("Master renderer initialized!");
 
-    DEBUG("Load level data\n");
+    LOG_DEBUG("Load level data");
     LevelLoader::loadLevelData();
-    DEBUG("Level data loaded!\n");
+    LOG_DEBUG("Level data loaded!");
 
-    DEBUG("Initialize audio master\n");
     AudioMaster::init();
-    DEBUG("Audio master initialized!\n");
 
     Global::fontVipnagorgialla = new FontType(Loader::loadTexture("res/Fonts/vipnagorgialla.png"), "res/Fonts/vipnagorgialla.fnt"); INCR_NEW("FontType");
 
-    DEBUG("Initialize text master\n");
+    LOG_DEBUG("Initialize text master");
     TextMaster::init();
-    DEBUG("Text master initialized!\n");
+    LOG_DEBUG("Text master initialized!");
 
-    DEBUG("Initialize GUI manager\n");
+    LOG_DEBUG("Initialize GUI manager");
     GuiManager::init();
-    DEBUG("GUI manager initialized!\n");
+    LOG_DEBUG("GUI manager initialized!");
 
     Global::menuManager.push(new MainMenu); INCR_NEW("MainMenu");
 
@@ -414,7 +408,6 @@ int main(int argc, char** argv)
 
     while (Global::gameState != STATE_EXITING && displayWantsToClose() == 0)
     {
-        DEBUG("c\n");
         timeNew = glfwGetTime();
 
         #ifndef WIN32
@@ -464,8 +457,9 @@ int main(int argc, char** argv)
         dt = std::fminf(dt, 0.04f); //Anything lower than 25fps will slow the gameplay down
         //dt*=0.2f;
         timeOld = timeNew;
+        LOG_DEBUG("dt = %f", dt);
 
-        DEBUG("Polling inputs\n");
+        LOG_DEBUG("Polling inputs");
         Input::pollInputs();
 
         frameCount++;
@@ -501,13 +495,13 @@ int main(int argc, char** argv)
         //std::fprintf(stdout, "time: %f time\n", thisTime);
 
         //entities managment
-        DEBUG("Entities management\n");
+        LOG_DEBUG("Entities management");
         for (auto entityToAdd : gameEntitiesToAdd)
         {
             gameEntities.insert(entityToAdd);
         }
         gameEntitiesToAdd.clear();
-        DEBUG("Entities added\nDeleting entities\n");
+        LOG_DEBUG("Entities added\nDeleting entities");
 
         for (auto entityToDelete : gameEntitiesToDelete)
         {
@@ -515,7 +509,7 @@ int main(int argc, char** argv)
             delete entityToDelete; INCR_DEL("Entity");
         }
         gameEntitiesToDelete.clear();
-        DEBUG("Entities deleted\n");
+        LOG_DEBUG("Entities deleted");
 
         //chunked entities mamanegement
         for (auto entityToAdd : gameChunkedEntitiesToAdd)
@@ -561,7 +555,7 @@ int main(int argc, char** argv)
             case STATE_RUNNING:
             {
                 //game logic
-                DEBUG("Game state: Running\n");
+                LOG_DEBUG("Game state: Running");
                 //unlock framerate during gameplay
                 if (Global::framerateUnlock)
                 {
@@ -636,7 +630,7 @@ int main(int argc, char** argv)
 
             case STATE_PAUSED:
             {
-                DEBUG("Game state: Paused\n");
+                LOG_DEBUG("Game state: Paused");
                 //vsync during pausing. no need to stress the system.
                 glfwSwapInterval(1);
                 break;
@@ -684,7 +678,7 @@ int main(int argc, char** argv)
             default:
                 break;
         }
-        DEBUG("Game state switch complete\n");
+        LOG_DEBUG("Game state switch complete");
 
         Global::menuManager.step();
 
@@ -692,14 +686,13 @@ int main(int argc, char** argv)
         SkyManager::calculateValues();
 
         //prepare entities to render
-        DEBUG("Perparing entities to render\n");
+        LOG_DEBUG("Perparing entities to render");
         for (Entity* e : gameEntities)
         {
             Master_processEntity(e);
         }
         if (gameChunkedEntities.size() > 0)
         {
-            DEBUG("gameChunkedEntities print :)\n");
             for (std::unordered_set<Entity*>* entitySet : entityChunkedList)
             {
                 for (Entity* e : (*entitySet))
@@ -709,11 +702,9 @@ int main(int argc, char** argv)
             }
         }
         
-        DEBUG("Processing entities\n");
         Master_processEntity(&stage);
         Master_renderShadowMaps(&lightSun);
         Master_processEntity(&skySphere);
-        DEBUG("Entities processed by renderer\n");
 
         glEnable(GL_CLIP_DISTANCE1);
         if (Global::useHighQualityWater && Global::stageUsesWater)
@@ -770,15 +761,15 @@ int main(int argc, char** argv)
 
         Vector3f camVel = cam.vel.scaleCopy(0.016666f);
         AudioMaster::updateListenerData(&cam.eye, &cam.target, &cam.up, &camVel);
-        DEBUG("AudioMaster listener data updated\n");
+        LOG_DEBUG("AudioMaster listener data updated");
 
         if (Global::renderBloom)
         {
             Global::gameMultisampleFbo->bindFrameBuffer();
         }
-        DEBUG("Master render\n");
+        LOG_DEBUG("Master render");
         Master_render(&cam, 0, 0, 0, 0);
-        DEBUG("Master render complete\n");
+        LOG_DEBUG("Master render complete");
         glDisable(GL_CLIP_DISTANCE1);
 
         if (Global::useHighQualityWater && Global::stageUsesWater)
@@ -803,12 +794,12 @@ int main(int argc, char** argv)
             GuiManager::addGuiToRender(rankDisplay);
         }
 
-        DEBUG("Refreshing GUI\n");
+        LOG_DEBUG("Refreshing GUI");
         GuiManager::refresh();
         GuiManager::clearGuisToRender();
         TextMaster::render();
 
-        DEBUG("Updating display\n");
+        LOG_DEBUG("Updating display");
         updateDisplay();
 
         AudioPlayer::refreshBGM();
@@ -818,9 +809,7 @@ int main(int argc, char** argv)
         if (Global::shouldLoadLevel)
         {
             Global::shouldLoadLevel = false;
-            DEBUG("Loading level.\n");
             LevelLoader::loadLevel(Global::levelName);
-            DEBUG("SMILE\n");
         }
 
         if (Global::finishStageTimer >= 0)
@@ -944,7 +933,7 @@ int main(int argc, char** argv)
                 Global::saveGhostData();
             }
         }
-        DEBUG("Done with level complete logic\n");
+        LOG_DEBUG("Done with level complete logic");
 
         if (previousTime > timeNew)
         {
@@ -974,7 +963,7 @@ int main(int argc, char** argv)
             }
         }
         //std::fprintf(stdout, "dt: %f\n", dt);
-        DEBUG("Reached end of game loop\n");
+        LOG_DEBUG("Reached end of game loop");
     }
 
     Global::saveSaveData();

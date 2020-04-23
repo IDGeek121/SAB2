@@ -22,11 +22,11 @@
 #include "hud.h"
 #include "timer.h"
 
-#include <logger.h>
+#include <macrologger.h>
 
 PauseScreen::PauseScreen()
 {
-    DEBUG("Creating pause screen\n");
+    LOG_INFO("Creating pause screen");
     //Pause all sound effects
     /*
     for (int i = 0; i < 14; i++)
@@ -58,7 +58,7 @@ PauseScreen::PauseScreen()
     }
 
     textQuit = new GUIText("Quit", size, Global::fontVipnagorgialla, 0.5f, 0.65f, 4, true); INCR_NEW("GUIText");
-    DEBUG("Pause screen created\n");
+    LOG_INFO("Pause screen created");
 }
 
 PauseScreen::~PauseScreen()

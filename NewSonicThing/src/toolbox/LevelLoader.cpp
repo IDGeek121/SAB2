@@ -76,7 +76,7 @@
 #include "../entities/playertails.h"
 #include "../entities/CloudStage/csstagemanager.h"
 
-#include <logger.h>
+#include <macrologger.h>
 
 int LevelLoader::numLevels = 0;
 
@@ -138,6 +138,7 @@ void LevelLoader::loadTitle()
 
 void LevelLoader::loadLevel(std::string levelFilename)
 {
+    LOG_INFO("Loading level.");
     std::string fname = levelFilename;
 
     if (fname == "")
@@ -208,7 +209,7 @@ void LevelLoader::loadLevel(std::string levelFilename)
     }
     Global::isNewLevel = false;
 
-    DEBUG("the letter a or something\n");
+    LOG_DEBUG("the letter a or something\n");
     if (stageFault == 1)
     {
         freeAllStaticModels();
@@ -231,33 +232,31 @@ void LevelLoader::loadLevel(std::string levelFilename)
         StageTransparent::deleteStaticModels();
     }
 
-    DEBUG("b\n");
-
     std::ifstream file(Global::pathToEXE + "res/Levels/" + fname);
-    DEBUG("Loading level file\n");
+    LOG_DEBUG("Loading level file");
     if (!file.is_open())
     {
-        ERROR("Level file couldn't be loaded");
+        LOG_ERROR("Level file couldn't be loaded");
         std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + "res/Levels/" + fname).c_str());
         file.close();
         return;
     }
-    DEBUG("Level file loaded\n");
+    LOG_DEBUG("Level file loaded");
     
     AudioPlayer::stopBGM();
-    DEBUG("BGM Stopped\n");
+    LOG_DEBUG("BGM Stopped");
     //Delete existing bgm if loading a new stage
     if (stageFault == 1)
     {
-        DEBUG("Deleting BGM buffers\n");
+        LOG_DEBUG("Deleting BGM buffers");
         AudioPlayer::deleteBuffersBGM();
-        DEBUG("BGM buffers deleted\n");
+        LOG_DEBUG("BGM buffers deleted");
     }
 
     //Global::stageUsesWater = false;
 
     //Run through the header content
-    DEBUG("Parsing header\n");
+    LOG_DEBUG("Parsing header");
     std::string modelFLoc;
     getlineSafe(file, modelFLoc);
 
@@ -330,7 +329,7 @@ void LevelLoader::loadLevel(std::string levelFilename)
 
     int numCollChunks = stoi(numCollChunksLine);
 
-    DEBUG("Loading in collision\n");
+    LOG_DEBUG("Loading in collision");
     if (stageFault == 1) //We need to load in new collision
     {
         CollisionChecker::deleteAllCollideModels();
@@ -546,7 +545,7 @@ void LevelLoader::loadLevel(std::string levelFilename)
 
 
     //Read in BGM
-    DEBUG("Reading in BGM\n");
+    LOG_DEBUG("Reading in BGM");
     std::string bgmHasLoopLine;
     getlineSafe(file, bgmHasLoopLine);
 
@@ -693,7 +692,7 @@ void LevelLoader::loadLevel(std::string levelFilename)
         Global::gameRaceTimeLimit = std::stof((currentLevel->missionData[Global::gameMissionNumber])[2]);
     }
 
-    DEBUG("Level header parsed\n");
+    LOG_DEBUG("Level header parsed");
 
 
 
@@ -877,6 +876,8 @@ void LevelLoader::loadLevel(std::string levelFilename)
     {
         glfwSwapInterval(0);
     }
+    
+    LOG_INFO("Level loaded");
 }
 
 

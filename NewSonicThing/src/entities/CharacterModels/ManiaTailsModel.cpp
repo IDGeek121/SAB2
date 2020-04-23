@@ -21,6 +21,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include <macrologger.h>
+
 std::list<TexturedModel*> ManiaTailsModel::modelBody;
 std::list<TexturedModel*> ManiaTailsModel::modelHead;
 std::list<TexturedModel*> ManiaTailsModel::modelLeftHumerus;
@@ -434,6 +436,7 @@ void ManiaTailsModel::setBaseAlpha(float a)
 
 void ManiaTailsModel::setRenderOrderOverride(char newOrder)
 {
+    LOG_DEBUG("Setting model render order to %hhx", newOrder);
                     renderOrderOverride = newOrder;
     myBody        ->renderOrderOverride = newOrder;
     myHead        ->renderOrderOverride = newOrder;

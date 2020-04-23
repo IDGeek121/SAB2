@@ -30,6 +30,8 @@
 #include <fstream>
 #endif
 
+#include <macrologger.h>
+
 extern GLFWwindow* window;
 
 InputStruct Input::inputs{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -476,6 +478,7 @@ void Input::pollInputs()
 
 void Input::init()
 {
+    LOG_INFO("Initializing input.");
     Input::inputs.uniqueVar = 1149650285; //Value that is very easy to find with a memory scan
     #ifndef __SWITCH__
 
@@ -718,4 +721,5 @@ void Input::init()
 
         joyLog.close();
     }
+    LOG_INFO("Input initialized!");
 }

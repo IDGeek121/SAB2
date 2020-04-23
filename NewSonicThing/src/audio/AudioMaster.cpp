@@ -24,7 +24,7 @@
 #include "../toolbox/maths.h"
 #include "../engineTester/main.h"
 
-#include <logger.h>
+#include <macrologger.h>
 
 ALCdevice*  AudioMaster::device = nullptr;
 ALCcontext* AudioMaster::context = nullptr;
@@ -32,13 +32,14 @@ ALCcontext* AudioMaster::context = nullptr;
 
 void AudioMaster::init()
 {
+    LOG_INFO("Initializing audio master");
     alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
     alListenerf(AL_GAIN, 0.1f);
 
     AudioMaster::device = alcOpenDevice(nullptr);
     if (AudioMaster::device == nullptr)
     {
-        ERROR("no sound device\n");
+        LOG_ERROR("No sound device");
         return;
     }
 
@@ -46,13 +47,14 @@ void AudioMaster::init()
     alcMakeContextCurrent(AudioMaster::context);
     if (AudioMaster::context == nullptr)
     {
-        ERROR("no sound context\n");
+        LOG_ERROR("No sound context");
         return;
     }
 
     AudioPlayer::loadSettings();
     AudioPlayer::createSources();
     AudioPlayer::loadSoundEffects();
+    LOG_INFO("Audio master initialized!");
 }
 
 void AudioMaster::updateListenerData(Vector3f* eye, Vector3f* target, Vector3f* up, Vector3f* vel)

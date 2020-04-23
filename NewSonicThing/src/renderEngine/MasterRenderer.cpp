@@ -21,8 +21,8 @@
 #include <unordered_map>
 #include <stdexcept>
 
-#undef LOG
-#include <logger.h>
+#define LOG_LEVEL 2
+#include <macrologger.h>
 
 ShaderProgram* shader;
 EntityRenderer* renderer;
@@ -182,14 +182,12 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
 
 void Master_processEntity(Entity* entity)
 {
-    DEBUG("ENTITY");
-    //printf(": %ld\n", (uint64_t)entity);
+    LOG_DEBUG("Processing entity");
     if (!entity->visible)
     {
         return;
     }
 
-    //printf("renderOrderOverride: %d\n", entity->renderOrderOverride);
     if (entity->renderOrderOverride >= 0)
     {
         std::unordered_map<TexturedModel*, std::list<Entity*>>* mapToUse = nullptr;
@@ -200,7 +198,7 @@ void Master_processEntity(Entity* entity)
             case 1: mapToUse = &entitiesMapPass2;       break;
             case 2: mapToUse = &entitiesMapPass3;       break;
             case 3: mapToUse = &entitiesMapTransparent; break;
-            default: DEBUG("you fucked\n"); mapToUse = &entitiesMap; break;
+            default: LOG_ERROR("Invalid renderOrderOverride: %d", entity->renderOrderOverride); mapToUse = &entitiesMap; break;
         }
 
         std::list<TexturedModel*>* modellist = entity->getModels();
@@ -225,14 +223,14 @@ void Master_processEntity(Entity* entity)
                 case 1: mapToUse = &entitiesMapPass2;       break;
                 case 2: mapToUse = &entitiesMapPass3;       break;
                 case 3: mapToUse = &entitiesMapTransparent; break;
-                default: DEBUG("you fucked2\n"); mapToUse = &entitiesMap; break;
+                default: LOG_ERROR("Invalid renderOrder: %d", entityModel->renderOrder); mapToUse = &entitiesMap; break;
             }
 
             std::list<Entity*>* list = &(*mapToUse)[entityModel];
             list->push_back(entity);
         }
     }
-    DEBUG("Entity processed\n");
+    LOG_DEBUG("Entity processed");
 }
 
 void Master_clearAllEntities()

@@ -66,7 +66,7 @@ CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
 			                                       libglad        \
 												   sdl2)
 
-CFLAGS	+=	$(INCLUDE) -D__SWITCH__
+CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -DLOG_LEVEL=3
 
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
 

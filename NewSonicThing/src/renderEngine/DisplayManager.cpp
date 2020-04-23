@@ -14,7 +14,7 @@
 #include "../toolbox/split.h"
 #include "../toolbox/getline.h"
 
-#include <logger.h>
+#include <macrologger.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void window_close_callback(GLFWwindow* window);
@@ -43,6 +43,7 @@ void loadGraphicsSettings();
 
 int createDisplay()
 {
+    LOG_DEBUG("Creating display");
     // glfw: initialize and configure
     // ------------------------------
     if (glfwInit() == GL_FALSE)
@@ -159,6 +160,7 @@ int createDisplay()
 
     //Master_makeProjectionMatrix();
 
+    LOG_DEBUG("Display created!");
     return 0;
 }
 

@@ -12,6 +12,8 @@
 #include <iostream>
 #include <string>
 
+#include <macrologger.h>
+
 Entity::Entity()
 {
     this->position.x = 0;
@@ -128,6 +130,7 @@ void Entity::setBaseColour(float red, float green, float blue)
 
 void Entity::setModelsRenderOrder(std::list<TexturedModel*>* models, char newOrder)
 {
+    LOG_DEBUG("Setting model render order to %hhx", newOrder);
     for (TexturedModel* model : (*models))
     {
         model->renderOrder = newOrder;

@@ -20,6 +20,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include <macrologger.h>
+
 std::list<TexturedModel*> ManiaSonicModel::modelBody;
 std::list<TexturedModel*> ManiaSonicModel::modelHead;
 std::list<TexturedModel*> ManiaSonicModel::modelLeftHumerus;
@@ -371,6 +373,7 @@ void ManiaSonicModel::setBaseAlpha(float a)
 
 void ManiaSonicModel::setRenderOrderOverride(char newOrder)
 {
+    LOG_DEBUG("Setting model render order to %hhx", newOrder);
                     renderOrderOverride = newOrder;
     myBody        ->renderOrderOverride = newOrder;
     myHead        ->renderOrderOverride = newOrder;
