@@ -76,6 +76,8 @@
 #include "../entities/playertails.h"
 #include "../entities/CloudStage/csstagemanager.h"
 
+#include <logger.h>
+
 int LevelLoader::numLevels = 0;
 
 void LevelLoader::loadTitle()
@@ -206,6 +208,7 @@ void LevelLoader::loadLevel(std::string levelFilename)
     }
     Global::isNewLevel = false;
 
+    DEBUG("the letter a or something\n");
     if (stageFault == 1)
     {
         freeAllStaticModels();
@@ -228,25 +231,33 @@ void LevelLoader::loadLevel(std::string levelFilename)
         StageTransparent::deleteStaticModels();
     }
 
+    DEBUG("b\n");
+
     std::ifstream file(Global::pathToEXE + "res/Levels/" + fname);
+    DEBUG("Loading level file\n");
     if (!file.is_open())
     {
+        ERROR("Level file couldn't be loaded");
         std::fprintf(stdout, "Error: Cannot load file '%s'\n", (Global::pathToEXE + "res/Levels/" + fname).c_str());
         file.close();
         return;
     }
-
+    DEBUG("Level file loaded\n");
+    
     AudioPlayer::stopBGM();
+    DEBUG("BGM Stopped\n");
     //Delete existing bgm if loading a new stage
     if (stageFault == 1)
     {
+        DEBUG("Deleting BGM buffers\n");
         AudioPlayer::deleteBuffersBGM();
+        DEBUG("BGM buffers deleted\n");
     }
 
     //Global::stageUsesWater = false;
 
     //Run through the header content
-
+    DEBUG("Parsing header\n");
     std::string modelFLoc;
     getlineSafe(file, modelFLoc);
 
@@ -319,6 +330,7 @@ void LevelLoader::loadLevel(std::string levelFilename)
 
     int numCollChunks = stoi(numCollChunksLine);
 
+    DEBUG("Loading in collision\n");
     if (stageFault == 1) //We need to load in new collision
     {
         CollisionChecker::deleteAllCollideModels();
@@ -534,7 +546,7 @@ void LevelLoader::loadLevel(std::string levelFilename)
 
 
     //Read in BGM
-
+    DEBUG("Reading in BGM\n");
     std::string bgmHasLoopLine;
     getlineSafe(file, bgmHasLoopLine);
 
@@ -681,7 +693,7 @@ void LevelLoader::loadLevel(std::string levelFilename)
         Global::gameRaceTimeLimit = std::stof((currentLevel->missionData[Global::gameMissionNumber])[2]);
     }
 
-
+    DEBUG("Level header parsed\n");
 
 
 

@@ -22,9 +22,13 @@
 #include "hud.h"
 #include "timer.h"
 
+#include <logger.h>
+
 PauseScreen::PauseScreen()
 {
+    DEBUG("Creating pause screen\n");
     //Pause all sound effects
+    /*
     for (int i = 0; i < 14; i++)
     {
         if (AudioPlayer::getSource(i)->isPlaying())
@@ -37,6 +41,7 @@ PauseScreen::PauseScreen()
             PauseScreen::pausedSounds[i] = false;
         }
     }
+    */
 
     Global::gameState = STATE_PAUSED;
 
@@ -53,6 +58,7 @@ PauseScreen::PauseScreen()
     }
 
     textQuit = new GUIText("Quit", size, Global::fontVipnagorgialla, 0.5f, 0.65f, 4, true); INCR_NEW("GUIText");
+    DEBUG("Pause screen created\n");
 }
 
 PauseScreen::~PauseScreen()
@@ -135,6 +141,7 @@ Menu* PauseScreen::step()
 
             Global::gameState = STATE_RUNNING;
 
+            /*
             //resume all sound effects
             for (int i = 0; i < 14; i++)
             {
@@ -144,6 +151,7 @@ Menu* PauseScreen::step()
                 }
                 PauseScreen::pausedSounds[i] = false;
             }
+            */
             break;
         }
 

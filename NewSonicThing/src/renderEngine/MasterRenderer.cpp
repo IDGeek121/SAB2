@@ -21,6 +21,9 @@
 #include <unordered_map>
 #include <stdexcept>
 
+#undef LOG
+#include <logger.h>
+
 ShaderProgram* shader;
 EntityRenderer* renderer;
 ShadowMapMasterRenderer* shadowMapRenderer;
@@ -179,11 +182,14 @@ void Master_render(Camera* camera, float clipX, float clipY, float clipZ, float 
 
 void Master_processEntity(Entity* entity)
 {
+    DEBUG("ENTITY");
+    //printf(": %ld\n", (uint64_t)entity);
     if (!entity->visible)
     {
         return;
     }
 
+    //printf("renderOrderOverride: %d\n", entity->renderOrderOverride);
     if (entity->renderOrderOverride >= 0)
     {
         std::unordered_map<TexturedModel*, std::list<Entity*>>* mapToUse = nullptr;
@@ -194,7 +200,7 @@ void Master_processEntity(Entity* entity)
             case 1: mapToUse = &entitiesMapPass2;       break;
             case 2: mapToUse = &entitiesMapPass3;       break;
             case 3: mapToUse = &entitiesMapTransparent; break;
-            default: break;
+            default: DEBUG("you fucked\n"); mapToUse = &entitiesMap; break;
         }
 
         std::list<TexturedModel*>* modellist = entity->getModels();
@@ -219,13 +225,14 @@ void Master_processEntity(Entity* entity)
                 case 1: mapToUse = &entitiesMapPass2;       break;
                 case 2: mapToUse = &entitiesMapPass3;       break;
                 case 3: mapToUse = &entitiesMapTransparent; break;
-                default: break;
+                default: DEBUG("you fucked2\n"); mapToUse = &entitiesMap; break;
             }
 
             std::list<Entity*>* list = &(*mapToUse)[entityModel];
             list->push_back(entity);
         }
     }
+    DEBUG("Entity processed\n");
 }
 
 void Master_clearAllEntities()

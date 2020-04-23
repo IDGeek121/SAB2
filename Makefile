@@ -55,15 +55,16 @@ ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 
 CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
 			$(ARCH) $(DEFINES) \
-			$(shell /opt/devkitpro/portlibs/switch/bin/aarch64-none-elf-pkg-config --cflags glfw3          \
+			$(shell /opt/devkitpro/portlibs/switch/bin/aarch64-none-elf-pkg-config --cflags-only-other glfw3          \
 			                                       egl            \
 												   glapi          \
 												   libdrm_nouveau \
+												   openal         \
 			                                       ogg            \
 												   vorbis         \
 												   vorbisfile     \
 			                                       libglad        \
-												   sdl2)          \
+												   sdl2)
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__
 
@@ -72,10 +73,11 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= $(shell /opt/devkitpro/portlibs/switch/bin/aarch64-none-elf-pkg-config --libs --static glfw3          \
+LIBS	:= $(shell /opt/devkitpro/portlibs/switch/bin/aarch64-none-elf-pkg-config --libs-only-l --static glfw3          \
                                                          egl            \
 														 glapi          \
 														 libdrm_nouveau \
+														 openal         \
                                                          ogg            \
 												         vorbis         \
 												         vorbisfile     \

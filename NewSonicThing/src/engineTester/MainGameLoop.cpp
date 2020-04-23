@@ -84,7 +84,7 @@
 #include <tchar.h>
 #endif
 
-#include "logger.h"
+#include <logger.h>
 
 static int nxlink_sock = -1;
 
@@ -414,6 +414,7 @@ int main(int argc, char** argv)
 
     while (Global::gameState != STATE_EXITING && displayWantsToClose() == 0)
     {
+        DEBUG("c\n");
         timeNew = glfwGetTime();
 
         #ifndef WIN32
@@ -464,6 +465,7 @@ int main(int argc, char** argv)
         //dt*=0.2f;
         timeOld = timeNew;
 
+        DEBUG("Polling inputs\n");
         Input::pollInputs();
 
         frameCount++;
@@ -486,22 +488,26 @@ int main(int argc, char** argv)
             std::fprintf(stderr, "%d\n", err);
         }
 
+        /*
         ALenum erral = alGetError();
         if (erral != AL_NO_ERROR)
         {
             std::fprintf(stderr, "########  AL ERROR  ########\n");
             std::fprintf(stderr, "%d\n", erral);
         }
+        */
 
         //long double thisTime = std::time(0);
         //std::fprintf(stdout, "time: %f time\n", thisTime);
 
         //entities managment
+        DEBUG("Entities management\n");
         for (auto entityToAdd : gameEntitiesToAdd)
         {
             gameEntities.insert(entityToAdd);
         }
         gameEntitiesToAdd.clear();
+        DEBUG("Entities added\nDeleting entities\n");
 
         for (auto entityToDelete : gameEntitiesToDelete)
         {
@@ -509,6 +515,7 @@ int main(int argc, char** argv)
             delete entityToDelete; INCR_DEL("Entity");
         }
         gameEntitiesToDelete.clear();
+        DEBUG("Entities deleted\n");
 
         //chunked entities mamanegement
         for (auto entityToAdd : gameChunkedEntitiesToAdd)
@@ -554,7 +561,7 @@ int main(int argc, char** argv)
             case STATE_RUNNING:
             {
                 //game logic
-
+                DEBUG("Game state: Running\n");
                 //unlock framerate during gameplay
                 if (Global::framerateUnlock)
                 {
@@ -629,6 +636,7 @@ int main(int argc, char** argv)
 
             case STATE_PAUSED:
             {
+                DEBUG("Game state: Paused\n");
                 //vsync during pausing. no need to stress the system.
                 glfwSwapInterval(1);
                 break;
@@ -676,6 +684,7 @@ int main(int argc, char** argv)
             default:
                 break;
         }
+        DEBUG("Game state switch complete\n");
 
         Global::menuManager.step();
 
@@ -683,12 +692,14 @@ int main(int argc, char** argv)
         SkyManager::calculateValues();
 
         //prepare entities to render
+        DEBUG("Perparing entities to render\n");
         for (Entity* e : gameEntities)
         {
             Master_processEntity(e);
         }
         if (gameChunkedEntities.size() > 0)
         {
+            DEBUG("gameChunkedEntities print :)\n");
             for (std::unordered_set<Entity*>* entitySet : entityChunkedList)
             {
                 for (Entity* e : (*entitySet))
@@ -698,9 +709,11 @@ int main(int argc, char** argv)
             }
         }
         
+        DEBUG("Processing entities\n");
         Master_processEntity(&stage);
         Master_renderShadowMaps(&lightSun);
         Master_processEntity(&skySphere);
+        DEBUG("Entities processed by renderer\n");
 
         glEnable(GL_CLIP_DISTANCE1);
         if (Global::useHighQualityWater && Global::stageUsesWater)
@@ -757,12 +770,15 @@ int main(int argc, char** argv)
 
         Vector3f camVel = cam.vel.scaleCopy(0.016666f);
         AudioMaster::updateListenerData(&cam.eye, &cam.target, &cam.up, &camVel);
+        DEBUG("AudioMaster listener data updated\n");
 
         if (Global::renderBloom)
         {
             Global::gameMultisampleFbo->bindFrameBuffer();
         }
+        DEBUG("Master render\n");
         Master_render(&cam, 0, 0, 0, 0);
+        DEBUG("Master render complete\n");
         glDisable(GL_CLIP_DISTANCE1);
 
         if (Global::useHighQualityWater && Global::stageUsesWater)
@@ -787,10 +803,12 @@ int main(int argc, char** argv)
             GuiManager::addGuiToRender(rankDisplay);
         }
 
+        DEBUG("Refreshing GUI\n");
         GuiManager::refresh();
         GuiManager::clearGuisToRender();
         TextMaster::render();
 
+        DEBUG("Updating display\n");
         updateDisplay();
 
         AudioPlayer::refreshBGM();
@@ -800,7 +818,9 @@ int main(int argc, char** argv)
         if (Global::shouldLoadLevel)
         {
             Global::shouldLoadLevel = false;
+            DEBUG("Loading level.\n");
             LevelLoader::loadLevel(Global::levelName);
+            DEBUG("SMILE\n");
         }
 
         if (Global::finishStageTimer >= 0)
@@ -924,6 +944,7 @@ int main(int argc, char** argv)
                 Global::saveGhostData();
             }
         }
+        DEBUG("Done with level complete logic\n");
 
         if (previousTime > timeNew)
         {
@@ -953,6 +974,7 @@ int main(int argc, char** argv)
             }
         }
         //std::fprintf(stdout, "dt: %f\n", dt);
+        DEBUG("Reached end of game loop\n");
     }
 
     Global::saveSaveData();

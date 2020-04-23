@@ -24,6 +24,8 @@
 #include "../toolbox/maths.h"
 #include "../engineTester/main.h"
 
+#include <logger.h>
+
 ALCdevice*  AudioMaster::device = nullptr;
 ALCcontext* AudioMaster::context = nullptr;
 
@@ -36,7 +38,7 @@ void AudioMaster::init()
     AudioMaster::device = alcOpenDevice(nullptr);
     if (AudioMaster::device == nullptr)
     {
-        fprintf(stderr, "no sound device\n");
+        ERROR("no sound device\n");
         return;
     }
 
@@ -44,7 +46,7 @@ void AudioMaster::init()
     alcMakeContextCurrent(AudioMaster::context);
     if (AudioMaster::context == nullptr)
     {
-        fprintf(stderr, "no sound context\n");
+        ERROR("no sound context\n");
         return;
     }
 

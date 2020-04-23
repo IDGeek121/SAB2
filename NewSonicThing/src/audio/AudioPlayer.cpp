@@ -11,7 +11,7 @@
 #include "../toolbox/split.h"
 #include "../toolbox/getline.h"
 
-
+#include <logger.h>
 
 float AudioPlayer::soundLevelSFX = 0.05f;
 float AudioPlayer::soundLevelBGM = 0.05f;
@@ -173,7 +173,7 @@ Source* AudioPlayer::play(int buffer, Vector3f* pos, float pitch, bool loop, flo
 {
     if (buffer >= (int)AudioPlayer::buffersSFX.size())
     {
-        std::fprintf(stderr, "Error: Index out of bounds on SE buffers\n");
+        ERROR("Index out of bounds on SE buffers\n");
         return nullptr;
     }
 

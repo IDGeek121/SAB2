@@ -138,18 +138,18 @@ void Input::pollInputs()
         {
             joystickIsPresent = true;
 
-            Input::inputs.INPUT_ACTION1 = state.buttons[BUTTON_A];
-            Input::inputs.INPUT_ACTION2 = state.buttons[BUTTON_X];
-            Input::inputs.INPUT_ACTION3 = state.buttons[BUTTON_B];
-            Input::inputs.INPUT_ACTION4 = state.buttons[BUTTON_Y];
+            Input::inputs.INPUT_ACTION1 = state.buttons[GLFW_GAMEPAD_BUTTON_A];
+            Input::inputs.INPUT_ACTION2 = state.buttons[GLFW_GAMEPAD_BUTTON_B];
+            Input::inputs.INPUT_ACTION3 = state.buttons[GLFW_GAMEPAD_BUTTON_X];
+            Input::inputs.INPUT_ACTION4 = state.buttons[GLFW_GAMEPAD_BUTTON_Y];
 
-            Input::inputs.INPUT_LB      = state.buttons[BUTTON_LB];
-            Input::inputs.INPUT_RB      = state.buttons[BUTTON_RB];
-            Input::inputs.INPUT_SELECT  = state.buttons[BUTTON_SELECT];
-            Input::inputs.INPUT_START   = state.buttons[BUTTON_START];
+            Input::inputs.INPUT_LB      = state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER];
+            Input::inputs.INPUT_RB      = state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER];
+            Input::inputs.INPUT_SELECT  = state.buttons[GLFW_GAMEPAD_BUTTON_BACK];
+            Input::inputs.INPUT_START   = state.buttons[GLFW_GAMEPAD_BUTTON_START];
 
-            Input::inputs.INPUT_DPADU   = state.buttons[BUTTON_DPADU];
-            Input::inputs.INPUT_DPADD   = state.buttons[BUTTON_DPADD];
+            Input::inputs.INPUT_DPADU   = state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP];
+            Input::inputs.INPUT_DPADD   = state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN];
 
             Input::inputs.INPUT_X  = state.axes[STICK_LX];
             Input::inputs.INPUT_Y  = state.axes[STICK_LY];
@@ -288,6 +288,7 @@ void Input::pollInputs()
         Input::inputs.INPUT_R2 = triggerRValue;
     }
 
+    #ifndef __SWITCH__
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
 
@@ -385,6 +386,7 @@ void Input::pollInputs()
         }
     }
     #endif
+    #endif
 
 
     #ifdef DEV_MODE
@@ -475,6 +477,7 @@ void Input::pollInputs()
 void Input::init()
 {
     Input::inputs.uniqueVar = 1149650285; //Value that is very easy to find with a memory scan
+    #ifndef __SWITCH__
 
     //load sensitivity and button mappings from external file
 
@@ -662,6 +665,7 @@ void Input::init()
         }
         file2.close();
     }
+    #endif
 
     glfwPollEvents();
 

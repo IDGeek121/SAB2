@@ -14,6 +14,8 @@
 #include "../toolbox/split.h"
 #include "../toolbox/getline.h"
 
+#include <logger.h>
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void window_close_callback(GLFWwindow* window);
 
