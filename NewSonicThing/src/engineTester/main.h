@@ -52,7 +52,7 @@ class ControllablePlayer;
 #define LVL_DELFINO_PLAZA   14
 #define LVL_CLOUD_STAGE     15
 
-#define DEV_MODE
+//#define DEV_MODE
 
 #ifdef DEV_MODE
     #include <thread>

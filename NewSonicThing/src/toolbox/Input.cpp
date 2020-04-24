@@ -30,6 +30,7 @@
 #include <fstream>
 #endif
 
+#define LOG_LEVEL 2
 #include <macrologger.h>
 
 extern GLFWwindow* window;
@@ -94,6 +95,7 @@ float TRIGGER_DEADZONE = 0.3f;
 
 void Input::pollInputs()
 {
+    LOG_DEBUG("Polling inputs");
     glfwPollEvents();
 
     Input::inputs.INPUT_PREVIOUS_ACTION1 = Input::inputs.INPUT_ACTION1;
@@ -474,6 +476,7 @@ void Input::pollInputs()
     {
         Input::inputs.MENU_Y = Input::inputs.approxYLeft - Input::inputs.approxYLeftPrevious;
     }
+    LOG_DEBUG("Finished polling inputs");
 }
 
 void Input::init()

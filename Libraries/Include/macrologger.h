@@ -62,7 +62,7 @@ static inline char *timenow();
 
 #endif
 
-#define LOG_FMT             "%s | %-7s | %-15s | %s:%d | "
+#define LOG_FMT             "%s | %-5s | %-20s | %s:%d | "
 #define LOG_ARGS(LOG_TAG)   timenow(), LOG_TAG, _FILE, __FUNCTION__, __LINE__
 
 #define NEWLINE     "\n"
@@ -72,27 +72,27 @@ static inline char *timenow();
 #define DEBUG_TAG   "DEBUG"
 
 #if LOG_LEVEL >= DEBUG_LEVEL
-#define LOG_DEBUG(message, args...)     PRINTFUNCTION(LOG_FMT message NEWLINE, LOG_ARGS(DEBUG_TAG), ## args)
+#define LOG_DEBUG(message, ...)     PRINTFUNCTION(LOG_FMT message NEWLINE, LOG_ARGS(DEBUG_TAG) __VA_OPT__(,) __VA_ARGS__)
 #else
-#define LOG_DEBUG(message, args...)
+#define LOG_DEBUG(message, ...)
 #endif
 
 #if LOG_LEVEL >= INFO_LEVEL
-#define LOG_INFO(message, args...)      PRINTFUNCTION(LOG_FMT message NEWLINE, LOG_ARGS(INFO_TAG), ## args)
+#define LOG_INFO(message, ...)      PRINTFUNCTION(LOG_FMT message NEWLINE, LOG_ARGS(INFO_TAG) __VA_OPT__(,) __VA_ARGS__)
 #else
-#define LOG_INFO(message, args...)
+#define LOG_INFO(message, ...)
 #endif
 
 #if LOG_LEVEL >= ERROR_LEVEL
-#define LOG_ERROR(message, args...)     PRINTFUNCTION(LOG_FMT message NEWLINE, LOG_ARGS(ERROR_TAG), ## args)
+#define LOG_ERROR(message, ...)     PRINTFUNCTION(LOG_FMT message NEWLINE, LOG_ARGS(ERROR_TAG) __VA_OPT__(,) __VA_ARGS__)
 #else
-#define LOG_ERROR(message, args...)
+#define LOG_ERROR(message, ...)
 #endif
 
 #if LOG_LEVEL >= NO_LOGS
-#define LOG_IF_ERROR(condition, message, args...) if (condition) PRINTFUNCTION(LOG_FMT message NEWLINE, LOG_ARGS(ERROR_TAG), ## args)
+#define LOG_IF_ERROR(condition, message, ...) if (condition) PRINTFUNCTION(LOG_FMT message NEWLINE, LOG_ARGS(ERROR_TAG) __VA_OPT__(,) __VA_ARGS__)
 #else
-#define LOG_IF_ERROR(condition, message, args...)
+#define LOG_IF_ERROR(condition, message, ...)
 #endif
 
 static inline char *timenow() {

@@ -64,11 +64,22 @@ int createDisplay()
     loadDisplaySettings();
     loadGraphicsSettings();
 
+    GLFWmonitor* monitor = nullptr;
+
     glfwWindowHint(GLFW_SAMPLES, AA_SAMPLES);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
+    if (Global::useFullscreen)
+    {
+        monitor = glfwGetPrimaryMonitor();
+
+        SCR_WIDTH = F_WIDTH;
+        SCR_HEIGHT = F_HEIGHT;
+    }
+
     unsigned int screenWidth  = SCR_WIDTH;
     unsigned int screenHeight = SCR_HEIGHT;
+    
 
 
     //int count;
@@ -81,7 +92,7 @@ int createDisplay()
 
     // glfw window creation
     // --------------------
-    window = glfwCreateWindow(screenWidth, screenHeight, "Sonic Adventure Blast 2", nullptr, nullptr);
+    window = glfwCreateWindow(screenWidth, screenHeight, "Sonic Adventure Blast 2", monitor, nullptr);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -209,6 +220,7 @@ void window_close_callback(GLFWwindow* /*windowHandle*/)
 
 void loadDisplaySettings()
 {
+    LOG_DEBUG("Loading Display Settings file: %s", (Global::pathToEXE + "Settings/DisplaySettings.ini").c_str());
     std::ifstream file(Global::pathToEXE + "Settings/DisplaySettings.ini");
     if (!file.is_open())
     {
@@ -276,6 +288,7 @@ void loadDisplaySettings()
 
 void loadGraphicsSettings()
 {
+    LOG_DEBUG("Loading Graphics Settings file: %s", (Global::pathToEXE + "Settings/GraphicsSettings.ini").c_str());
     std::ifstream file(Global::pathToEXE + "Settings/GraphicsSettings.ini");
     if (!file.is_open())
     {

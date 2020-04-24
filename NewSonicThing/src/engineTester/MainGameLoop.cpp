@@ -84,6 +84,7 @@
 #include <tchar.h>
 #endif
 
+#define LOG_LEVEL 2
 #include <macrologger.h>
 
 static int nxlink_sock = -1;
@@ -459,7 +460,6 @@ int main(int argc, char** argv)
         timeOld = timeNew;
         LOG_DEBUG("dt = %f", dt);
 
-        LOG_DEBUG("Polling inputs");
         Input::pollInputs();
 
         frameCount++;
@@ -478,18 +478,16 @@ int main(int argc, char** argv)
         GLenum err = glGetError();
         if (err != GL_NO_ERROR)
         {
-            std::fprintf(stderr, "########  GL ERROR  ########\n");
-            std::fprintf(stderr, "%d\n", err);
+            LOG_ERROR("AL ERROR: %d", err);
         }
 
-        /*
+        
         ALenum erral = alGetError();
         if (erral != AL_NO_ERROR)
         {
-            std::fprintf(stderr, "########  AL ERROR  ########\n");
-            std::fprintf(stderr, "%d\n", erral);
+            LOG_ERROR("AL ERROR: %d", erral);
         }
-        */
+        
 
         //long double thisTime = std::time(0);
         //std::fprintf(stdout, "time: %f time\n", thisTime);
@@ -501,8 +499,8 @@ int main(int argc, char** argv)
             gameEntities.insert(entityToAdd);
         }
         gameEntitiesToAdd.clear();
-        LOG_DEBUG("Entities added\nDeleting entities");
-
+        LOG_DEBUG("Entities added");
+        LOG_DEBUG("Deleting entities");
         for (auto entityToDelete : gameEntitiesToDelete)
         {
             gameEntities.erase(entityToDelete);
@@ -1122,6 +1120,7 @@ void Global::loadSaveData()
 
 void Global::saveGhostData()
 {
+    LOG_DEBUG("Writing ghost data.");
     #ifdef _WIN32
     _mkdir((Global::pathToEXE + "res/SaveData").c_str());
     #else
@@ -1182,6 +1181,7 @@ void Global::saveGhostData()
 
     if (newTimeIsFaster)
     {
+        LOG_INFO("New best time. Saving file to %s", ghostFilename.c_str());
         if (Global::raceLogSize > 0)
         {
             std::ofstream raceLogFile;
@@ -1203,6 +1203,7 @@ void Global::saveGhostData()
             Global::raceLogSize = 0;
         }
     }
+    LOG_INFO("Ghost writing complete!");
 }
 
 void Global::saveSaveData()
@@ -1212,6 +1213,8 @@ void Global::saveSaveData()
     #else
     mkdir((Global::pathToEXE + "res/SaveData").c_str(), 0777);
     #endif
+
+    LOG_INFO("Saving file. Donut turn off the power.");
 
     std::ofstream file;
     file.open((Global::pathToEXE + "res/SaveData/SaveData.sav").c_str(), std::ios::out | std::ios::trunc);
@@ -1245,6 +1248,7 @@ void Global::saveSaveData()
 
         file.close();
     }
+    LOG_INFO("File saved.");
 }
 
 void Global::increaseRingCount(int rings)
